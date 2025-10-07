@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { fetchUserFromGoogle } from "./services/googleAuthService.js";
+import { fetchUserFromGoogle, generateGoogleAuthUrl } from "./services/googleAuthService.js";
 import { writeFile } from "fs/promises";
 import users from "./usersDB.json" with { type: "json" };
 import sessions from "./sessionsDB.json" with { type: "json" };
@@ -30,12 +30,7 @@ app.use(cookieParser());
 // });
 // In your main server file
 app.get("/auth/google", (req, res) => {
-  // Correctly use the variable from .env
-  const clientId = process.env.GOOGLE_CLIENT_ID; 
-  const redirectUrl = process.env.GOOGLE_REDIRECT_URL; // Use the one from .env
-
-  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${clientId}&scope=openid email profile&redirect_uri=${redirectUrl}`;
-
+  const authUrl = generateGoogleAuthUrl();
   res.redirect(authUrl);
   // res.end(); // This line is not needed after a redirect
 });

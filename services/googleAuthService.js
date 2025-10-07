@@ -9,9 +9,14 @@ const client = new OAuth2Client({
   redirectUri: redirectUrl,
 });
 
+export function generateGoogleAuthUrl() {
+  return client.generateAuthUrl({
+    scope : [ "email" , "profile" , "openid" ]
+  })
+}
+
 export async function fetchUserFromGoogle(code) {
   console.log("Running fetchIdToken function...");
-
   const { tokens } = await client.getToken(code);
 
   const loginTicket = await client.verifyIdToken({
