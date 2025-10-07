@@ -43,7 +43,8 @@ app.get("/auth/google/callback", async (req, res) => {
   }
 
   const { code } = req.query;
-  const { sub, email, name, picture } = await fetchUserFromGoogle(code);
+  if (code){
+    const { sub, email, name, picture } = await fetchUserFromGoogle(code);
   const existingUser = users.find(({ id }) => id === sub);
 
   if (existingUser) {
@@ -72,6 +73,10 @@ app.get("/auth/google/callback", async (req, res) => {
   await writeFile("sessionsDB.json", JSON.stringify(sessions, null, 2));
   res.redirect(`http://localhost:5500/callback.html?sid=${sessionId}`);
   return res.end();
+  }else{
+    res.redirect(`http://localhost:5500/callback.html?error=true`);
+  }
+  
 });
 
 app.get("/session-cookie", async (req, res) => {
